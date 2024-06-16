@@ -1,12 +1,13 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Letter from './Letter'
 import './Answer.css'
 
-function Answer({word, wordOfTheDay}){
+function Answer({word, wordOfTheDay, check}){
    let objWord = {}
    let objWordOfTheDay = {}
    const arrayWord = word.split('')
    const arrayWordOfTheDay = wordOfTheDay.split('')
+   let correctLetters = 0
    arrayWordOfTheDay.forEach(elem => {
       if(objWordOfTheDay[elem]){
          objWordOfTheDay[elem]++
@@ -19,6 +20,7 @@ function Answer({word, wordOfTheDay}){
       if(objWordOfTheDay[elem]){
          if(elem === arrayWordOfTheDay[idx]){
             objWord[elem] = 'correct'
+            correctLetters++
          }
          else{
             objWord[elem] = 'misplaced'
@@ -28,9 +30,16 @@ function Answer({word, wordOfTheDay}){
          objWord[elem] = 'incorrect'
       }
    })
+
+   useEffect(() => {
+      if(correctLetters === 5){
+         check(true)
+      }
+   }, [correctLetters])
+
    return(
       <div className="Answer">
-         {Object.keys(objWord).map((elem, idx) => {
+         {arrayWord.map((elem, idx) => {
             if(objWord[elem] === 'correct'){
                return (<Letter letter={elem} key={idx} position={'correct'}></Letter>)
             }

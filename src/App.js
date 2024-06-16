@@ -7,6 +7,7 @@ function App() {
   const [word, setWord] = useState('');
   const [wordOfTheDay, setWordOfTheDay] = useState('');
   const [allTheWords, setAllTheWords] = useState([])
+  const [playerHasWon, setPlayerHasWon] = useState(false)
 
   useEffect(() => {
     const fetchWordOfTheDay = async () => {
@@ -24,6 +25,11 @@ function App() {
     };
     fetchWordOfTheDay();
   }, []);
+
+  function checkIfPlayerWon(bool){
+    setPlayerHasWon(bool)
+  }
+
 
   async function checkIfWordIsValid(text) {
     const options = {
@@ -60,22 +66,62 @@ function App() {
       setWord(e.target.value)
     }
   }
-
-  return (
-    <div className='App'>
-      <h3 className='guess'>You have {guesses} guesses remaining:</h3>
-      <input
-        type="text"
-        onKeyUp={handleEntry}
-        maxLength={5}
-      />
-      {
-        allTheWords.map((elem, index) => (
-          <Answer key={index} word={elem} wordOfTheDay={wordOfTheDay}></Answer>
-        ))
-      }
-    </div>
-  );
+  if(playerHasWon){
+    return (
+      <div className='App'>
+        <h1 className='guess'>You have Correctly Guessed the word</h1>
+        <input
+          type="text"
+          onKeyUp={handleEntry}
+          maxLength={5}
+          disabled={true}
+        />
+        {
+          allTheWords.map((elem, index) => (
+            <Answer key={index} word={elem} wordOfTheDay={wordOfTheDay} check={checkIfPlayerWon}></Answer>
+          ))
+        }
+      </div>
+    );
+  }
+  else{
+    if(guesses > 0){
+      return (
+        <div className='App'>
+        <h3 className='guess'>You have {guesses} guesses remaining:</h3>
+        <input
+          type="text"
+          onKeyUp={handleEntry}
+          maxLength={5}
+        />
+        {
+          allTheWords.map((elem, index) => (
+            <Answer key={index} word={elem} wordOfTheDay={wordOfTheDay} check={checkIfPlayerWon}></Answer>
+          ))
+        }
+      </div>
+      )
+    }
+    else{
+      return (
+        <div className='App'>
+          <h1 className='guess'>Oooh You lost Better luck Tomorrow</h1>
+          <h1 className='guess'>Today's Word was "{wordOfTheDay.toUpperCase()}"</h1>
+          <input
+            type="text"
+            onKeyUp={handleEntry}
+            maxLength={5}
+            disabled={true}
+          />
+          {
+            allTheWords.map((elem, index) => (
+              <Answer key={index} word={elem} wordOfTheDay={wordOfTheDay} check={checkIfPlayerWon}></Answer>
+            ))
+          }
+        </div>
+      );
+    }
+  }
 }
 
 export default App;
