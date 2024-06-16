@@ -55,7 +55,6 @@ function App() {
       setAllTheWords([...allTheWords, word])
       e.target.value = ''
       setWord('')
-      
     } 
     else{
       setWord(e.target.value)
